@@ -21,7 +21,6 @@
 
 //int numberOfResets = 0;
 
-//uint8_t buffer[protobufSize];
 
 
 
