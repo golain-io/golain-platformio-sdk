@@ -1,3 +1,6 @@
 [submodule "deviceHealth/nanopb"]
 	path = deviceHealth/nanopb
 	url = https://github.com/nanopb/nanopb
+[submodule "persistent_logs/nanopb"]
+	path = persistent_logs/nanopb
+	url = https://github.com/nanopb/nanopb/
