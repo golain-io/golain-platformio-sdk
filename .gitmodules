@@ -1,3 +1,6 @@
 [submodule "deviceHealth/nanopb"]
 	path = deviceHealth/nanopb
 	url = https://github.com/nanopb/nanopb
+[submodule "MQTT/nanopb"]
+	path = MQTT/nanopb
+	url = https://github.com/nanopb/nanopb
