@@ -25,6 +25,7 @@
 #include "shadow.pb.h"
 #include "constants.h"
 #include "certs.h"
+#include <mbedtls/ssl.h>
 
 
 #define TAG "GOLAIN MQTT"
@@ -173,7 +174,7 @@ void mqtt_app_start(void){
     const esp_mqtt_client_config_t mqtt_cfg = {
         .uri = "mqtts://dev.golain.io",
         .port = 8083,
-        .client_id = DEVICE_NAME,
+        .client_id = "gh",
         // .skip_cert_common_name_check=true,
         .client_cert_pem = (const char*)client_cert_pem,
         .client_key_pem = (const char*)client_key_pem,
@@ -182,7 +183,7 @@ void mqtt_app_start(void){
     };
 
      esp_err_t res=esp_tls_init_global_ca_store();
-    // res = esp_tls_set_global_ca_store((unsigned char *)mqtt_root_ca_cert_pem_start, mqtt_root_ca_cert_pem_end-mqtt_root_ca_cert_pem_start); 
+     res = esp_tls_set_global_ca_store((unsigned char *)root_ca, strlen(root_ca)); 
     if(res != 0){
         ESP_LOGI(TAG,"Error code: 0x%08x\n", res);
     }
