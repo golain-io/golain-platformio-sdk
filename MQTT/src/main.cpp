@@ -1,25 +1,38 @@
-#include <Arduino.h>
-#include "golain_mqtt.h"
 #include <WiFi.h>
-
-const char* wifi_ssid = "lol";
-const char* wifi_password = "Casio@123";
+#include <PubSubClient.h>
+#include <WiFiClientSecure.h>
+#include "mqtt_config.h"
+#include "mqtt_helper.h"
+// Set the WiFi credentials
+const char* ssid = "lol";
+const char* password = "Casio@123";
 
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-  Serial.println("Attempting to connecting to the given ssid and password");
-  WiFi.begin(wifi_ssid,wifi_password);
-  while(WiFi.status() != WL_CONNECTED){
-    Serial.println(".");
-  }
-  Serial.println("Connected to wifi");
+  // Start the Serial communication
+  Serial.begin(9600);
 
-  mqtt_app_start();
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  mqtt_connect();
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // Handle MQTT messages
+  client.loop();
+
+  // Publish a message every 5 seconds
+  static unsigned long lastPublish = 0;
+  if (millis() - lastPublish > 5000) {
+    lastPublish = millis();
+    client.publish("test/topic", "Hello, world!");
+  }
 }
+
