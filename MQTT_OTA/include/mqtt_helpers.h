@@ -10,7 +10,7 @@
 void callback(char *topic, byte *payload, unsigned int length)
 {
 
-  if (strcmp(topic, ota_len) == 0)
+  if (strcmp(topic, DEVICE_OTA_LENGTH) == 0)
   {
     char var[length];
     for (int i = 0; i < length; i++)
@@ -23,10 +23,10 @@ void callback(char *topic, byte *payload, unsigned int length)
     Serial.print(atoi(var));
     Serial.println();
     FIRMWARE_SIZE = atoi(var);
-    mqttClient.publish(ota_publish, "1");
+    mqttClient.publish("status", "1");
   }
 
-  if (strcmp(topic, mqtt_topic) == 0)
+  if (strcmp(topic, DEVICE_OTA_DATA) == 0)
   {
     // Serial.print(length);
     Serial.println("Firmware update received");
@@ -61,18 +61,21 @@ void callback(char *topic, byte *payload, unsigned int length)
 
 void mqtt_start()
 {
-
+    wifiClient.setCACert(AWS_CERT_CA);
+    wifiClient.setCertificate(AWS_CERT_CRT);
+    wifiClient.setPrivateKey(AWS_CERT_PRIVATE);
+    wifiClient.setInsecure();
     mqttClient.setServer(mqtt_server, mqtt_port);
     mqttClient.setCallback(callback);
 
     while (!mqttClient.connected())
     {
         Serial.println("Connecting to MQTT broker...");
-        if (mqttClient.connect("ESP32", mqtt_username, mqtt_password))
+        if (mqttClient.connect(client_id))
         {
             Serial.println("Connected to MQTT broker");
-            mqttClient.subscribe(mqtt_topic);
-            mqttClient.subscribe(ota_len);
+            mqttClient.subscribe(DEVICE_OTA_LENGTH);
+            mqttClient.subscribe(DEVICE_OTA_DATA);
         }
         else
         {

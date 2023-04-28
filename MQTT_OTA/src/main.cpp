@@ -5,11 +5,11 @@
 #include <Update.h>
 #include <configs.h>
 #include "mqtt_helpers.h"
-
+#include "configs.h"
 void setup()
 {
   Serial.begin(9600);
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   while (WiFi.status() != WL_CONNECTED)
   {
