@@ -1,3 +1,0 @@
-[submodule "deviceHealth/nanopb"]
-	path = deviceHealth/nanopb
-	url = https://github.com/nanopb/nanopb
