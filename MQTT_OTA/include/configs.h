@@ -1,50 +1,42 @@
-#pragma once
+#ifndef mqtt_config
+#define mqtt_config
+#include <Arduino.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <PubSubClient.h>
+#include <Update.h>
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_log.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include "esp_wifi.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "esp_event_loop.h"
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-#include "freertos/queue.h"
-#include "freertos/event_groups.h"
-
-#include "lwip/sockets.h"
-#include "lwip/dns.h"
-#include "lwip/netdb.h"
-
-#include "esp_log.h"
-#include "mqtt_client.h"
-
-#include <esp_ota_ops.h>
-#include <mqtt_client.h>
-
-//Tags
-#define WIFI_TAG "WIFI_TAG"
-#define MQTT_TAG "MQTT TAG"
-#define OTA_TAG "OTA_TAG"
-
-//MQTT params
-#define MQTT_URI "mqtt://broker.hivemq.com"
-#define MQTT_PORT 1883
+// WiFi network credentials
+const char *ssid = "lol";
+const char *password = "Casio@123";
+void callback(char *topic, byte *payload, unsigned int length);
+// MQTT broker details
+long FIRMWARE_SIZE = 0;
+long TOTAL_WRITTEN_FIRMWARE = 0;
+const char *mqtt_server = "broker.hivemq.com";
+const int mqtt_port = 1883;
+const char *mqtt_username = "";
+const char *mqtt_password = "";
+const char *mqtt_topic = "golain/firmware/update";
+const char *ota_len = "golain/firmware/length";
+const char *ota_publish = "golain/firmware/length/status";
+WiFiClient wifiClient;
+PubSubClient mqttClient(wifiClient);
 
 
-//OTA params
-int current_len = 0;
-uint8_t status = 0;
-esp_ota_handle_t ota_handle = 0;
 
-//Wifi Params
-#define CONFIG_WIFI_SSID "FLBS"
-#define CONFIG_WIFI_PASSWORD "hellowworld"
-static EventGroupHandle_t wifi_event_group;
-const static int CONNECTED_BIT = BIT0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
