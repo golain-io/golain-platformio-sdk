@@ -5,7 +5,14 @@
 - Supports MQTT secured and websockets.
 - Enables Remote firmware updates with their digital signatures.
 - Fully open-souce and maintained by Golain.
-- Open to contributions from developers.
+- Open to contributions from developers.  
+## Works with  
+
+| Hardware        | PlatformIO Version | Status | Tested |
+| ---             | ---      | ---       | ---                |
+| ESP32-WROOM32-D | `v3.1.1`   | `dev` | :x:                |
+| ESP32-C3        | `v3.1.1` | `dev`     | :heavy_check_mark: |
+
 
 ## Prerequisites - 
 - VS Code   
