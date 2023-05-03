@@ -1,24 +1,34 @@
+# Persistent Logs
 
+## Overview
+This is a set of convinient macros and NVS fucntions that allow you to write logs to a non-volatile store & also print them to console.
+These Macros are simply wrappers around the ESP-IDF LOG marcos.
+The logs are serialised using nanopb (protocol buffers) and are stored in a byte-seriliased format to memory.
+Retriving the logs from memory will deserialise them back to the original structure. The proto file used to serialise them is also included as a reference.
 
-# Persistent Logs Documentation  
-&nbsp;
-  
-### Macros
-  
+## Usage
+These are meant as a conviniet way to apply tracing / reset logging for an embedded application.
+For example:
+- To tell and persist the last reason for a device reset.
+- To diagnose errors by collecting and then batch pushing error logs to a backend (Golain's IoT Platform has support for this built-in)
+- Diagnostic code and information that may be used in production
+
+## Availble Macros
+ 
+### For setup
 - CONFIG_MAX_PERSISTENT_LOGS  
     Defines maximum number of logs that can be stored on device.  
-    Default value is 50.  
-   #include <persistent_logs.h>
+    Default value is 50.
   
-- P_LOG_I  
-  #define P_LOG_I ( TAG, MESSAGE )  
-  Writes an Info level log to uart, stores the content of log in a protobuf file and store it in NVS.
-  #include <persistent_logs.h>  
-  ### Parameters - 
-  - Tag - A string, which is used to trace the origin of log.   
-  - Message - A string which contains your info log message.  
-  &nbsp;
-- P_LOG_W  
+### Usage
+
+#### `P_LOG_I(tag, message)`    
+Writes an Info level log to uart, stores the content of log in a proto-encoded format and stores it in NVS.
+*Parameters*
+- `tag`: A string (char*). User definable, used to tag different subsystems within an application   
+- `messafe`: A string (char*). Contains your info log message.
+
+#### P_LOG_W
   #define P_LOG_W ( TAG, MESSAGE ) 
   #include <persistent_logs.h>  
   Writes an Warning level log to uart, stores the content of log in a protobuf file and store it in NVS.
