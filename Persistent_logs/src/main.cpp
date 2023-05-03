@@ -15,13 +15,14 @@ void setup()
   Serial.begin(9600);
   custom_nvs_init();
 }
-
+int k = 0;
 void loop()
 {
   
 
 
-  P_LOG_I(MAIN_TAG,"hello there");
+  P_LOG_I(MAIN_TAG,"hello there"+String(k));
+  k++;
  
-  delay(2000);
+  delay(200);
 }

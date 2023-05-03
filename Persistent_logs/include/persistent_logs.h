@@ -16,7 +16,7 @@
 #define CONFIG_MAX_PERSISTENT_LOGS 50
 void write_p_log(String tag, String log, String func, Level level);
 void write_to_nvs(uint8_t *buffer, size_t len);
-
+void read_old_logs();
 #define P_LOG_I(tag, log)                                                                         \
     \    
 Serial.println(String("INFO_LOG -> ") + String(tag) + "  (" + __func__ + ")  -> " + String(log)); \
@@ -68,7 +68,7 @@ void write_to_nvs(uint8_t *buffer, size_t len)
     }
 
     // get last log id
-    int last_log_id;
+    int32_t last_log_id;
     if (nvs_get_i32(p_log_handle, "last_log_id", &last_log_id) ==
         ESP_ERR_NVS_NOT_FOUND)
     {
@@ -112,7 +112,7 @@ void read_old_logs()
     size_t len;
     char key[2];
     esp_err_t err;
-    int last_log_id = 0;
+    int32_t last_log_id = 0;
     memset(buffer, 0, 256);
     err = nvs_open("p_logs", NVS_READWRITE, &p_log_handle);
     if (err != ESP_OK)
@@ -134,6 +134,7 @@ void read_old_logs()
         /*
         do whatever you want with the logs
         */
+      
 
         memset(buffer, 0, 256); // clear the buffer
         last_log_id--;
