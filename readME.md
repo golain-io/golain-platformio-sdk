@@ -24,5 +24,5 @@
 
 
 ## Getting Started - 
-- Clone this repository using command  `git clone git@github.com:golain-io/golain-platformio-sdk.git` 
+- Clone this repository using command  `git clone --recursive git@github.com:golain-io/golain-platformio-sdk.git` 
 - Go to examples section, build, upload and flash it to your microcontroller
