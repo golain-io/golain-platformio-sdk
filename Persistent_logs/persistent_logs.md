@@ -26,24 +26,23 @@ For example:
 Writes an Info level log to uart, stores the content of log in a proto-encoded format and stores it in NVS.
 *Parameters*
 - `tag`: A string (char*). User definable, used to tag different subsystems within an application   
-- `messafe`: A string (char*). Contains your info log message.
+- `message`: A string (char*). Contains your info log message.  
 
-#### P_LOG_W
-  #define P_LOG_W ( TAG, MESSAGE ) 
-  #include <persistent_logs.h>  
-  Writes an Warning level log to uart, stores the content of log in a protobuf file and store it in NVS.
-  ### Parameters - 
-  - Tag - A string, which is used to trace the origin of log.   
-  - Message - A string which contains your warning log message.  
-  &nbsp;
-- P_LOG_E  
-  #define P_LOG_E ( TAG, MESSAGE )  
-  #include <persistent_logs.h>  
-  Writes an Error level log to uart, stores the content of log in a protobuf file and store it in NVS.
-  ### Parameters - 
-  - Tag - A string, which is used to trace the origin of log.   
-  - Message - A string which contains your Error log message.  
-  &nbsp;
+
+#### `P_LOG_W(tag, message)`    
+Writes an Warning level log to uart, stores the content of log in a proto-encoded format and stores it in NVS.
+*Parameters*
+- `tag`: A string (char*). User definable, used to tag different subsystems within an application   
+- `message`: A string (char*). Contains your info log message.  
+
+
+#### `P_LOG_E(tag, message)`    
+Writes an Error level log to uart, stores the content of log in a proto-encoded format and stores it in NVS.
+*Parameters*
+- `tag`: A string (char*). User definable, used to tag different subsystems within an application   
+- `message`: A string (char*). Contains your info log message.  
+
+
 
 ### Functions  
 
