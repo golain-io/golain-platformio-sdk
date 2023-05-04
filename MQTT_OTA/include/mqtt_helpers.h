@@ -10,7 +10,7 @@
 void callback(char *topic, byte *payload, unsigned int length)
 {
 
-  if (strcmp(topic, DEVICE_OTA_LENGTH) == 0)
+  if (strcmp(topic, DEVICE_OTA_LENGTH) == 0 && (CONFIG_OTA_ENABLE == 1))
   {
     char var[length];
     for (int i = 0; i < length; i++)
@@ -26,7 +26,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     mqttClient.publish("status", "1");
   }
 
-  if (strcmp(topic, DEVICE_OTA_DATA) == 0)
+  if (strcmp(topic, DEVICE_OTA_DATA) == 0 &&  (CONFIG_OTA_ENABLE == 1))
   {
     // Serial.print(length);
     Serial.println("Firmware update received");

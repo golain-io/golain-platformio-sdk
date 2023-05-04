@@ -22,7 +22,7 @@
 #define DEVICE_DATA_TOPIC       TOPIC_ROOT DEVICE_NAME "/device-data"
 #define DEVICE_OTA_LENGTH       TOPIC_ROOT DEVICE_NAME "/ota-length"
 #define DEVICE_OTA_DATA         TOPIC_ROOT DEVICE_NAME "/ota-data"
-
+#define CONFIG_OTA_ENABLE  1
 WiFiClientSecure wifiClient;
 PubSubClient mqttClient(wifiClient);
 // void callback(char *topic, byte *payload, unsigned int length);
