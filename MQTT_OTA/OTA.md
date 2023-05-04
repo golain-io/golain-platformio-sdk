@@ -28,3 +28,6 @@ OTA (Over-The-Air) updates are increasingly becoming an essential feature of emb
 <br>
  Caution - While uploading the firmware via Golain APIs, ensure that it contains this OTA component, otherwise you will not be able to update your device remotely again.
 
+### Prerequisites 
+
+- Add `lib_deps=knolleary/PubSubClient@^2.8` to your platformio.ini file
