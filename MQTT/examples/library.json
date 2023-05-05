@@ -1,0 +1,25 @@
+{
+    "name": "Golain MQTT",
+    "version": "0.0.1",
+    "description": "This library lets you connect to golain MQTT backend",
+    "keywords": "MQTT,golain",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/golain-io/golain-platformio-sdk"
+    },
+    "authors":
+    [
+      {
+        "name": "Advait Chandorkar",
+        "email": "advait.chandorkar@quoppo.com"
+      }
+    ],
+
+
+    "dependencies": {
+      "knolleary/PubSubClient": "~2.8"
+    },
+    "frameworks": "*",
+    "platforms": "*"
+  }
