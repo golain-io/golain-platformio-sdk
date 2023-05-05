@@ -1,0 +1,20 @@
+{
+    "name": "Golain Persistent Logs",
+    "version": "0.0.2",
+    "description": "This library lets you add log statements of different verbosity in your code. It also saves the logs in proto format to NVS of esp32.",
+    "keywords": "persistent logs",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/golain-io/golain-platformio-sdk"
+    },
+    "authors":
+    [
+      {
+        "name": "Advait Chandorkar",
+        "email": "advait.chandorkar@quoppo.com"
+      }
+    ],
+    "frameworks": "*",
+    "platforms": "*"
+  }

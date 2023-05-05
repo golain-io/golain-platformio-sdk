@@ -17,18 +17,15 @@
 void write_p_log(String tag, String log, String func, Level level);
 void write_to_nvs(uint8_t *buffer, size_t len);
 void read_old_logs();
-#define P_LOG_I(tag, log)                                                                         \
-    \    
+#define P_LOG_I(tag, log)                                                                         \    
 Serial.println(String("INFO_LOG -> ") + String(tag) + "  (" + __func__ + ")  -> " + String(log)); \
     write_p_log(tag, log, String(__func__), Level_INFO);
 
-#define P_LOG_W(tag, log)                                                                          \
-    \                          
+#define P_LOG_W(tag, log)                                                                          \                          
  Serial.println(String("WARN_LOG -> ") + String(tag) + "  (" + __func__ + ")  -> " + String(log)); \
     write_p_log(tag, log, String(__func__), Level_WARNING);
 
-#define P_LOG_E(tag, log)                                                                          \
-    \                        
+#define P_LOG_E(tag, log)                                                                          \                        
   Serial.println(String("ERR_LOG -> ") + String(tag) + "  (" + __func__ + ")  -> " + String(log)); \
     write_p_log(tag, log, String(__func__), Level_ERROR);
 
