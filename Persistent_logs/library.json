@@ -1,6 +1,6 @@
 {
     "name": "Golain Persistent Logs",
-    "version": "0.0.3",
+    "version": "0.0.7",
     "description": "This library lets you add log statements of different verbosity in your code. It also saves the logs in proto format to NVS of esp32.",
     "keywords": "persistent logs",
     "repository":

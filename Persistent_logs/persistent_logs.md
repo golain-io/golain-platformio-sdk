@@ -51,7 +51,7 @@ Writes an Error level log to uart, stores the content of log in a proto-encoded 
     This function lets you read the persistent logs that have been stored in NVS so far.  
     Write your business logic i.e. what you want to do with the old logs inside this function as follows  
             
-
+        
         nvs_get_blob(p_log_handle, key, buffer, &len);
         /*
         do whatever you want with the logs
