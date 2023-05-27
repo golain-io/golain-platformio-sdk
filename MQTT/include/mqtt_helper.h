@@ -5,7 +5,21 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 #include "mqtt_config.h"
-#include "mqtt_helper.h"
+#include "golain.h"
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct golain_config
+{
+
+    char *root_topic;
+    char *ca_cert;
+    char *device_cert;
+    char *device_pvt_key;
+    char *client_id;
+    void (*callback)(char *, byte *, unsigned int);
+
+} golain_config;
+
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -19,16 +33,16 @@ void callback(char *topic, byte *payload, unsigned int length)
     Serial.println();
 }
 
-void mqtt_connect()
+void mqtt_connect(golain_config* clientt)
 {
     // Set the client certificates
-    espClient.setCACert(AWS_CERT_CA);
-    espClient.setCertificate(AWS_CERT_CRT);
-    espClient.setPrivateKey(AWS_CERT_PRIVATE);
+    espClient.setCACert(clientt->ca_cert);
+    espClient.setCertificate(clientt->device_cert);
+    espClient.setPrivateKey(clientt->device_pvt_key);
     espClient.setInsecure();
     // Set the MQTT broker details
     client.setServer(mqtt_server, mqtt_port);
-    client.setCallback(callback);
+    client.setCallback(clientt->callback);
 
     // Connect to MQTT broker
     while (!client.connected())

@@ -10,8 +10,8 @@
 #define mqtt_server  "dev.golain.io"
 #define mqtt_port  8083
 #define client_id "gh"
-#define TOPIC_ROOT              "/3eac_bc04/"
-#define DEVICE_NAME             client_id
+
+
 #define DEVICE_SHADOW_TOPIC     TOPIC_ROOT DEVICE_NAME "/device-shadow" 
 #define DEVICE_SHADOW_TOPIC_R   TOPIC_ROOT DEVICE_NAME "/device-shadow/r"
 #define DEVICE_SHADOW_TOPIC_U   TOPIC_ROOT DEVICE_NAME "/device-shadow/u"
