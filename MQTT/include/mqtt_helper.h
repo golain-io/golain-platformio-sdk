@@ -48,7 +48,7 @@ void mqtt_connect(golain_config* clientt)
     while (!client.connected())
     {
         Serial.println("Connecting to MQTT broker...");
-        if (client.connect(client_id))
+        if (client.connect(clientt -> client_id))
         {
             Serial.println("Connected to MQTT broker");
         }

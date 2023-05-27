@@ -11,6 +11,7 @@
 #define mqtt_port  8083
 
 
+
 #define DEVICE_SHADOW_TOPIC     TOPIC_ROOT DEVICE_NAME "/device-shadow" 
 #define DEVICE_SHADOW_TOPIC_R   TOPIC_ROOT DEVICE_NAME "/device-shadow/r"
 #define DEVICE_SHADOW_TOPIC_U   TOPIC_ROOT DEVICE_NAME "/device-shadow/u"

@@ -1,6 +1,6 @@
 {
     "name": "Golain MQTT",
-    "version": "0.0.6",
+    "version": "1.2",
     "description": "This library lets you connect to golain MQTT backend",
     "keywords": "MQTT,golain",
     "repository":
