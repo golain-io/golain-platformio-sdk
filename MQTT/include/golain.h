@@ -43,10 +43,14 @@ void golain_set_callback(golain_config *client, void (*callback)(char *, byte *,
 
 void golain_init(golain_config *client)
 {
-    if (client->ca_cert == NULL || client->device_cert == NULL || client->device_pvt_key == NULL || client->client_id == NULL || client->root_topic == NULL)
-    {
-        Serial.println("Please set all the parameters of the client");
-        return;
+    if(client->callback == NULL){
+        Serial.println("Failed to set callback");
+    }
+    else  if(client->client_id == NULL){
+        Serial.println("Failed to set client id");
+    }
+    else  if(client->device_pvt_key == NULL){
+        Serial.println("Failed to set device_pvt_key");
     }
     mqtt_connect(client);
 }
