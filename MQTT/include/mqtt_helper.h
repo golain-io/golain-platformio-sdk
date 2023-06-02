@@ -18,6 +18,14 @@ typedef struct golain_config
     char *client_id;
     void (*callback)(char *, byte *, unsigned int);
 
+    #ifdef GOLAIN_OTA_ENABLED
+    void (*ota_callback)(char *, byte *, unsigned int);
+    #endif
+
+    #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+    void (*shadow_callback)()
+    #endif
+
 } golain_config;
 
 
@@ -43,6 +51,11 @@ void mqtt_connect(golain_config* clientt)
     // Set the MQTT broker details
     client.setServer(mqtt_server, mqtt_port);
     client.setCallback(clientt->callback);
+
+     #ifdef GOLAIN_OTA_ENABLED
+    client.setCallback(ota_callback);
+    #endif
+
 
     // Connect to MQTT broker
     while (!client.connected())
