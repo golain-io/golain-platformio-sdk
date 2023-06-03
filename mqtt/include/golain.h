@@ -10,9 +10,41 @@
 #include <pb_decode.h>
 #include <pb_encode.h>
 #include <shadow.pb.h>
-#define GOLAIN_DEVICE_SHADOW_ENABLED 1
+// #define GOLAIN_DEVICE_SHADOW_ENABLED 1
+// #define GOLAIN_DATA_POINT_ENABLED 1
+// #define GOLAIN_DEVICE_DATA_POINT "lol"
 
 
+
+#ifdef GOLAIN_DATA_POINT_ENABLED
+Shadow device_data_struct = Shadow_init_zero;
+uint8_t *device_data_buffer[Shadow_size];
+
+void golain_device_data_point_set(Shadow device_data_struct){
+
+    pb_ostream_t stream = pb_ostream_from_buffer(device_data_buffer, Shadow_size);
+
+    status = pb_encode(&stream, Shadow_fields, &device_data_struct);
+    *message_length = stream.bytes_written;
+
+    if (!status)
+    {
+        Serial.printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
+        return;
+    }
+    else{
+        Serial.printf("Encoding successful\n");
+    }
+
+    client.publish(DEVICE_DATA_TOPIC,(const char*)device_data_buffer);
+
+}
+
+
+#endif
+
+
+#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
 Shadow global_shadow = Shadow_init_zero;
 
 void golain_shadow_set(uint8_t *buffer, size_t *message_length)
@@ -50,6 +82,8 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
         return;
     }
 }
+
+#endif
 
 
 void golain_set_root_topic(golain_config *client, char *str)

@@ -17,7 +17,6 @@
 #define DEVICE_SHADOW_TOPIC_U   TOPIC_ROOT DEVICE_NAME "/device-shadow/u"
 #define DEVICE_OTA_TOPIC        TOPIC_ROOT DEVICE_NAME "/ota"
 #define DEVICE_DATA_TOPIC       TOPIC_ROOT DEVICE_NAME "/device-data"
-
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
 
