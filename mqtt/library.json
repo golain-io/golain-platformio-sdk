@@ -1,6 +1,6 @@
 {
     "name": "Golain MQTT",
-    "version": "1.4",
+    "version": "1.6",
     "description": "This library lets you connect to golain MQTT backend",
     "keywords": "MQTT,golain",
     "repository":
@@ -18,7 +18,8 @@
 
 
     "dependencies": {
-      "knolleary/PubSubClient": "~2.8"
+      "knolleary/PubSubClient": "~2.8",
+      "nanopb/Nanopb": "~0.4.7"
     },
     "frameworks": "*",
     "platforms": "*"
