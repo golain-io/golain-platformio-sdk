@@ -44,10 +44,11 @@ void callback(char *topic, byte *payload, unsigned int length)
 void mqtt_connect(golain_config* clientt)
 {
     // Set the client certificates
+
     espClient.setCACert(clientt->ca_cert);
     espClient.setCertificate(clientt->device_cert);
     espClient.setPrivateKey(clientt->device_pvt_key);
-    espClient.setInsecure();
+    // espClient.setInsecure();
     // Set the MQTT broker details
     client.setServer(mqtt_server, mqtt_port);
     client.setCallback(clientt->callback);

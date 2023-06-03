@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 void golain_set_root_topic(golain_config *client, char *str)
 {
 
@@ -49,6 +48,9 @@ void golain_init(golain_config *client)
         return;
     }
     mqtt_connect(client);
+    #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+        client.subscribe(DEVICE_SHADOW_TOPIC_R);
+    #endif
 }
 
 #endif
