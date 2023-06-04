@@ -17,14 +17,13 @@
 
 
 #ifdef GOLAIN_DATA_POINT_ENABLED
-Shadow device_data_struct = Shadow_init_zero;
-uint8_t *device_data_buffer[Shadow_size];
+uint8_t *device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
 
-void golain_device_data_point_set(Shadow device_data_struct){
+void golain_post_device_data(void* device_data_struct, pb_msgdec_t* message_fields, char* topic, size_t message_size){
 
-    pb_ostream_t stream = pb_ostream_from_buffer(device_data_buffer, Shadow_size);
+    pb_ostream_t stream = pb_ostream_from_buffer(device_data_buffer, message_size);
 
-    status = pb_encode(&stream, Shadow_fields, &device_data_struct);
+    status = pb_encode(&stream, message_fields, &device_data_struct);
     *message_length = stream.bytes_written;
 
     if (!status)
@@ -36,7 +35,7 @@ void golain_device_data_point_set(Shadow device_data_struct){
         Serial.printf("Encoding successful\n");
     }
 
-    client.publish(DEVICE_DATA_TOPIC,(const char*)device_data_buffer);
+    client.publish(DEVICE_DATA_TOPIC topic, (const char*)device_data_buffer);
 
 }
 

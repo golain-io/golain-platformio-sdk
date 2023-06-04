@@ -23,7 +23,7 @@ typedef struct golain_config
     #endif
 
     #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
-    void (*shadow_callback)()
+    void (*shadow_callback)();
     #endif
 
 } golain_config;
