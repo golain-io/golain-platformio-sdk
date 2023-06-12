@@ -13,6 +13,11 @@
 // #define GOLAIN_DEVICE_SHADOW_ENABLED 1
 // #define GOLAIN_DATA_POINT_ENABLED 1
 // #define GOLAIN_DEVICE_DATA_POINT "lol"
+
+#ifdef GOLAIN_DEVICE_HEALTH_ENABLED 
+#include "deviceHealth.h"
+#endif
+
 #ifdef GOLAIN_P_LOGS_ENABLED
 #include "persistent_logs.h"
 #endif
