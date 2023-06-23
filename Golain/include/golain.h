@@ -10,7 +10,6 @@
 #include <pb_decode.h>
 #include <pb_encode.h>
 #include <shadow.pb.h>
-#include<data_point.pb.h>
 // #define GOLAIN_DEVICE_SHADOW_ENABLED 1
 // #define GOLAIN_DATA_POINT_ENABLED 1
 // #define GOLAIN_DEVICE_DATA_POINT "lol"
@@ -23,7 +22,6 @@
 #include "persistent_logs.h"
 #endif
 
-HSL2 temp_struct = HSL2_init_zero;
 
 #ifdef GOLAIN_DATA_POINT_ENABLED
 uint8_t device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
