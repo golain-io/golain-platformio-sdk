@@ -10,6 +10,7 @@
 #include <pb_decode.h>
 #include <pb_encode.h>
 #include <shadow.pb.h>
+#include<data_point.pb.h>
 // #define GOLAIN_DEVICE_SHADOW_ENABLED 1
 // #define GOLAIN_DATA_POINT_ENABLED 1
 // #define GOLAIN_DEVICE_DATA_POINT "lol"
@@ -22,16 +23,17 @@
 #include "persistent_logs.h"
 #endif
 
+HSL2 temp_struct = HSL2_init_zero;
 
 #ifdef GOLAIN_DATA_POINT_ENABLED
-uint8_t *device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
+uint8_t device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
 
-void golain_post_device_data(void* device_data_struct, pb_msgdec_t* message_fields, char* topic, size_t message_size){
-
+void golain_post_device_data(void* device_data_struct,const pb_msgdesc_t* message_fields, char* topic, size_t message_size){
+    bool status;
     pb_ostream_t stream = pb_ostream_from_buffer(device_data_buffer, message_size);
 
-    status = pb_encode(&stream, message_fields, &device_data_struct);
-    *message_length = stream.bytes_written;
+    status = pb_encode(&stream, message_fields, device_data_struct);
+    // *message_length = stream.bytes_written;
 
     if (!status)
     {
@@ -41,9 +43,12 @@ void golain_post_device_data(void* device_data_struct, pb_msgdec_t* message_fiel
     else{
         Serial.printf("Encoding successful\n");
     }
+//    bool status;
+    
+    String temp = String(DEVICE_DATA_TOPIC) + String(topic);
+    client.publish((temp).c_str(), (const char*)device_data_buffer,stream.bytes_written-1);
 
-    client.publish(DEVICE_DATA_TOPIC topic, (const char*)device_data_buffer);
-
+  
 }
 
 
@@ -86,6 +91,9 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
     {
         Serial.printf("Decoding failed: %s\n", PB_GET_ERROR(&stream));
         return;
+    }
+    else{
+        Serial.println("Decoded Successfully");
     }
 }
 
@@ -137,8 +145,9 @@ void golain_init(golain_config *clientt)
     }
     mqtt_connect(clientt);
     #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
-        client.subscribe(DEVICE_SHADOW_TOPIC_R);
+        client.subscribe(DEVICE_SHADOW_TOPIC_R,1);
     #endif
+    
 }
 
 #endif
