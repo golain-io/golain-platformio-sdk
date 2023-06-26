@@ -55,6 +55,8 @@ void golain_post_device_data(void* device_data_struct,const pb_msgdesc_t* messag
 
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
 Shadow global_shadow = Shadow_init_zero;
+uint8_t receive_buf[4096];
+
 
 void golain_shadow_set(uint8_t *buffer, size_t *message_length)
 

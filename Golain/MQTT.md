@@ -13,34 +13,41 @@ MQTT can be used to send send and receive messages from and to the device. In or
 - Select and attach a policy to your device.
 - Download certificate chain zip for your newly crearted device.
 - Extract the zip file and save somewhere, because you will not be able to download it again.
-- Fill in the given 3 certificates in `mqtt_config.h`.
-- Put your root topic mentioned in `connections_settings.json` in the `CONFIG_ROOT_TOPIC` macro.
-- Setup Internet connection either using WiFi of Ethernet.
-- Once Connected to the internet, Connect to the Golain MQTT broker using `mqtt_app_start()` api.
-- Use other APIs such as `post_device_shadow()` or `post_device_data_points` as per your business logic.
+- Create `golain_config` struct.
+- Create build flags called `TOPIC_ROOT` and `DEVICE_NAME` in platformio.ini file. Syntax is shown below.
+```python
+build_flags = -D TOPIC_ROOT='"<Your Root Topic>"'
+              -D DEVICE_NAME='"<Your Device Name>"'
+```
+- Add build flags to enable device shadow and device data points as follows
+```python
+build_flags = -D GOLAIN_DEVICE_SHADOW_ENABLED  
+            # Enables Device shadow feature
+              -D GOLAIN_P_LOGS_ENABLED  
+            # Enables Persistant logs  
+              -D GOLAIN_DEVICE_HEALTH_ENABLED
+            # Enables Device Health
+              -D GOLAIN_DATA_POINT_ENABLED
+            # Enables Device Data points.
+```
+Each build flag/macro enables a certain feature.  
+If you dont need a feature, simply dont include the macro. It will reduce memory footprint of your firmware.
 
-## Availble Macros  
- 
-### For setup
-- `CONFIG_MQTT_SERVER`  
-    This macro lets user put the url of MQTT broker, to which they want to connect. By default this macro will expand to `dev.golain.io` .  
--  `CONFIG_MQTT_PORT`  
-    This macro lets user put the port, through which they want to connect to the broker. By default this macro will expand to `8083` .
-- `CONFIG_CLIENT_ID`  
-    This macro lets user add their unique client id which is mentioned in the `connection_settings.json` file, downloaded at the time of device creation. In order to have a successful connection, one has to put correct client id a in string format.  
-- `CONFIG_TOPIC_ROOT`  
-This macro lets user add their unique topic root which is mentioned in the `connection_settings.json` file, downloaded at the time of device creation. This parameter helps Golain backend identify the device.
-    
-### Constants - 
-- `static const char AWS_CERT_CA[] `  
-    This is an array inside `mqtt_config.h` which holds the CA certificate of the MQTT broker. Open the root certificate, from the certificate zip file, you downloaded while device creation. Make sure to change contents only between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` .This array is stored in the flash memory, thereby saving the RAM available.  
+- Define your Shadow.proto file inside src folder inside your project. Make sure you put same proto defination here, which you put in while creating device using our website.
 
-- `static const char AWS_CERT_CRT[] `  
-    This is an array inside `mqtt_config.h` which holds the device certificate of the created device. Open the device certificate, from the certificate zip file, you downloaded while device creation. Make sure to change contents only between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` .This array is stored in the flash memory, thereby saving the RAM available.  
+- Mention these two lines in platformio.init file to compile your .proto files. If you want to use device shadow feature, make sure to use name of message as `Shadow`.
+```python
+custom_nanopb_protos =
+    +<src/*.proto> #// add source to your .protofile 
+custom_nanopb_options =
+    --error-on-unmatched
+```
+- Connect to the internet either using WiFi or Ethernet. 
+- Fill in the members of the struct viz. CA Certificate, Device Certificate, Device private key, Callback , Root topic, Client id either directly or using the given APIs.
+- Connect to the golain backend using `golain_init()` API. Put your correctly filled struct in this API.
 
-- `static const char AWS_CERT_PRIVATE[] `  
-    This is an array inside `mqtt_config.h` which holds the private key of the created device. Open the device private key, from the certificate zip file, you downloaded while device creation. Make sure to change contents only between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` .This array is stored in the flash memory, thereby saving the RAM available.  
-    
+
+
 
 ### Functions 
 
@@ -69,5 +76,54 @@ This macro lets user add their unique topic root which is mentioned in the `conn
     `length`: size_t. This is length of the message that has to be sent over MQTT.  
     `topic`: A ptr to char. This is the topic to which the data has to be sent.  
 
+- `golain_init(golain_config *clientt)`   
+    Description  -  
+    The golain_init function initializes the client configuration and establishes a connection to the MQTT broker for the Golain IoT framework. It also subscribes to the device shadow topic if the GOLAIN_DEVICE_SHADOW_ENABLED flag is defined.  
 
-     
+    Syntax -  
+    ```c
+     golain_init(golain_config *clientt);
+    ```
+    Parameters -  
+    clientt (golain_config*): A pointer to the client configuration structure.  
+
+    Usage -  
+    The golain_init function should be called once, typically during the setup phase of an IoT application using the Golain framework.  
+
+    Configuration Parameters -  
+
+    The clientt parameter is a pointer to a golain_config structure that contains the following configuration parameters:
+
+    `ca_cert (const char*)`: The Certificate Authority (CA) certificate for establishing a secure connection to the MQTT broker.  
+
+    `device_cert (const char*)`: The device certificate for authentication with the MQTT broker.  
+
+    `device_pvt_key (const char*)`: The private key corresponding to the device certificate.  
+
+    `client_id (const char*)`: The unique client identifier for the MQTT connection.  
+
+    `root_topic (const char*)`: The root topic to which the device will publish and subscribe.
+
+
+    Return Value:  
+
+    This function does not return any value.  
+
+    Example - 
+    ```c
+    // Define and initialize the golain_config structure
+    golain_config client_config;
+    client_config.ca_cert = "path/to/ca_cert.pem";
+    client_config.device_cert = "path/to/device_cert.pem";
+    client_config.device_pvt_key = "path/to/device_pvt_key.pem";
+    client_config.client_id = "your_device_name";
+    client_config.root_topic = "your _root_topic";
+
+    // Initialize the Golain client
+    golain_init(&client_config);
+    ```
+
+- `golain_shadow_set(uint8_t *buffer, size_t *message_length)`:  
+    This function encodes the global shadow struct into protobuf file, which is stored into `uint8_t* buffer` and the encoded length is given in the `*message_length` parameter.
+    Update the global shadow struct with your desired values and call this function.  
+
