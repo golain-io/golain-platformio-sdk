@@ -1,7 +1,7 @@
 {
     "name": "Golain",
-    "version": "2.4.1",
-    "description": "",
+    "version": "2.4.4",
+    "description": "This is Golain libray",
     "keywords": "MQTT,golain",
     "repository":
     {

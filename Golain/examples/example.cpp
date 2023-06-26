@@ -12,20 +12,10 @@ int myFunction(int, int);
 
 uint8_t shadow_buff[Shadow_size];
 
-void shadow_callback(char *topic, byte *payload, unsigned int length)
+void shadow_callback()
 {
-  memset(receive_buf,0,127);
-    Serial.print("Received message [");
-    Serial.print(topic);
-    Serial.print("]: ");
-    Serial.printf(" Received length is %d",length);
-    for (int i = 0; i < length; i++)
-    {
-        receive_buf[i] = payload[i];
-    }
 
-    golain_shadow_get(receive_buf,length);
-    Serial.printf("Red %d Green %d Blue %d state %d\n",global_shadow.red,global_shadow.green,global_shadow.blue,global_shadow.on);
+// Do whatever you want with the global shadow here.
 }
 
 

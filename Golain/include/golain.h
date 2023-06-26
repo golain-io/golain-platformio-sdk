@@ -52,7 +52,6 @@ void golain_post_device_data(void* device_data_struct,const pb_msgdesc_t* messag
 
 #endif
 
-
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
 Shadow global_shadow = Shadow_init_zero;
 uint8_t receive_buf[4096];
@@ -76,6 +75,7 @@ void golain_shadow_set(uint8_t *buffer, size_t *message_length)
     else{
         Serial.printf("Encoding successful\n");
     }
+    user_shadow_callback();
 }
 
 
@@ -95,6 +95,7 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
     else{
         Serial.println("Decoded Successfully");
     }
+    user_shadow_callback();
 }
 
 #endif
