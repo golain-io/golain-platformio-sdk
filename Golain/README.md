@@ -42,6 +42,7 @@ custom_nanopb_protos =
 custom_nanopb_options =
     --error-on-unmatched
 ```
+- If you intend to use device shadow functionality, please define a callback named `user_shadow_callback()` and implement the business logic using values in `global_shadow` struct. Note that this callback will be called after every remote shadow update.
 - Connect to the internet either using WiFi or Ethernet. 
 - Fill in the members of the struct viz. CA Certificate, Device Certificate, Device private key, Callback , Root topic, Client id either directly or using the given APIs.
 - Connect to the golain backend using `golain_init()` API. Put your correctly filled struct in this API.
