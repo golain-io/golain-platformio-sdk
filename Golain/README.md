@@ -46,6 +46,7 @@ custom_nanopb_options =
 - Connect to the internet either using WiFi or Ethernet. 
 - Fill in the members of the struct viz. CA Certificate, Device Certificate, Device private key, Callback , Root topic, Client id either directly or using the given APIs.
 - Connect to the golain backend using `golain_init()` API. Put your correctly filled struct in this API.
+- If you want to update and publish the shadow, use `global_shadow` struct to update it, then use `golain_shadow_set` API to set the shadow locally and encode it in protocol buffer format. The encoded protocol buffer file will be stored in `uint8_t* buffer`, which is a paramter of  `golain_shadow_set` function. It will also give you encoded message length. After calling this function, post the shadow using `post_shadow()` function. Your updated shadow will be reflected on the platform.
 
 
 
