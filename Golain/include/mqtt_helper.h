@@ -29,6 +29,7 @@ typedef struct golain_config
 } golain_config;
 
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+uint8_t receive_buf[4096];
 void shadow_callback(char *topic, byte *payload, unsigned int length)
 {
     memset(receive_buf, 0, 127);
