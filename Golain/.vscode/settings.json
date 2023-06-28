@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "*.proto": "python",
-        "string_view": "cpp"
-    }
-}
