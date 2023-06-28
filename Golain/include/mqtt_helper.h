@@ -28,25 +28,7 @@ typedef struct golain_config
 
 } golain_config;
 
-#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
-uint8_t receive_buf[4096];
-void shadow_callback(char *topic, byte *payload, unsigned int length)
-{
-    memset(receive_buf, 0, 127);
-    Serial.print("Received message [");
-    Serial.print(topic);
-    Serial.print("]: ");
-    Serial.printf(" Received length is %d", length);
-    for (int i = 0; i < length; i++)
-    {
-        receive_buf[i] = payload[i];
-    }
 
-    golain_shadow_get(receive_buf, length);
-    // Serial.printf("Red %d Green %d Blue %d state %d\n",global_shadow.red,global_shadow.green,global_shadow.blue,global_shadow.on);
-}
-
-#endif
 
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -70,10 +52,7 @@ void mqtt_connect(golain_config *clientt)
     // Set the MQTT broker details
     client.setServer(mqtt_server, mqtt_port);
     client.setCallback(clientt->callback);
-#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
-    client.subscribe(DEVICE_SHADOW_TOPIC_R, 1);
-    client.setCallback(shadow_callback);
-#endif
+
 
 #ifdef GOLAIN_OTA_ENABLED
     client.setCallback(ota_callback);

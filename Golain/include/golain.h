@@ -9,12 +9,12 @@
 #include <pb_common.h>
 #include <pb_decode.h>
 #include <pb_encode.h>
-#include <shadow.pb.h>
+
 // #define GOLAIN_DEVICE_SHADOW_ENABLED 1
 // #define GOLAIN_DATA_POINT_ENABLED 1
 // #define GOLAIN_DEVICE_DATA_POINT "lol"
 
-#ifdef GOLAIN_DEVICE_HEALTH_ENABLED 
+#ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
 #endif
 
@@ -22,11 +22,11 @@
 #include "persistent_logs.h"
 #endif
 
-
 #ifdef GOLAIN_DATA_POINT_ENABLED
 uint8_t device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
 
-void golain_post_device_data(void* device_data_struct,const pb_msgdesc_t* message_fields, char* topic, size_t message_size){
+void golain_post_device_data(void *device_data_struct, const pb_msgdesc_t *message_fields, char *topic, size_t message_size)
+{
     bool status;
     pb_ostream_t stream = pb_ostream_from_buffer(device_data_buffer, message_size);
 
@@ -38,24 +38,23 @@ void golain_post_device_data(void* device_data_struct,const pb_msgdesc_t* messag
         Serial.printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
         return;
     }
-    else{
+    else
+    {
         Serial.printf("Encoding successful\n");
     }
-//    bool status;
-    
+    //    bool status;
+
     String temp = String(DEVICE_DATA_TOPIC) + String(topic);
-    client.publish((temp).c_str(), (const char*)device_data_buffer,stream.bytes_written-1);
-
-  
+    client.publish((temp).c_str(), (const char *)device_data_buffer, stream.bytes_written - 1);
 }
-
 
 #endif
 
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+#include <shadow.pb.h>
 Shadow global_shadow = Shadow_init_zero;
-uint8_t receive_buf[4096];
 
+uint8_t receive_buf[4096];
 
 void golain_shadow_set(uint8_t *buffer, size_t *message_length)
 
@@ -72,12 +71,12 @@ void golain_shadow_set(uint8_t *buffer, size_t *message_length)
         Serial.printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
         return;
     }
-    else{
+    else
+    {
         Serial.printf("Encoding successful\n");
     }
     user_shadow_callback();
 }
-
 
 void golain_shadow_get(uint8_t *buffer, size_t message_length)
 {
@@ -92,14 +91,32 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
         Serial.printf("Decoding failed: %s\n", PB_GET_ERROR(&stream));
         return;
     }
-    else{
+    else
+    {
         Serial.println("Decoded Successfully");
     }
-    user_shadow_callback();
+    // user_shadow_callback();
 }
 
-#endif
+void shadow_callback(char *topic, byte *payload, unsigned int length)
+{
+    memset(receive_buf, 0, 127);
+    Serial.print("Received message [");
+    Serial.print(topic);
+    Serial.print("]: ");
+    Serial.printf(" Received length is %d", length);
+    for (int i = 0; i < length; i++)
+    {
+        receive_buf[i] = payload[i];
+    }
 
+    golain_shadow_get(receive_buf, length);
+    // Serial.printf("Red %d Green %d Blue %d state %d\n",global_shadow.red,global_shadow.green,global_shadow.blue,global_shadow.on);
+}
+
+
+
+#endif
 
 void golain_set_root_topic(golain_config *client, char *str)
 {
@@ -139,16 +156,16 @@ void golain_set_callback(golain_config *client, void (*callback)(char *, byte *,
 
 void golain_init(golain_config *clientt)
 {
-    if (clientt->ca_cert == NULL || clientt-> device_cert == NULL || clientt->device_pvt_key == NULL || clientt->client_id == NULL || clientt->root_topic == NULL)
+    if (clientt->ca_cert == NULL || clientt->device_cert == NULL || clientt->device_pvt_key == NULL || clientt->client_id == NULL || clientt->root_topic == NULL)
     {
         Serial.println("Please set all the parameters of the client");
         return;
     }
     mqtt_connect(clientt);
-    #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
-        client.subscribe(DEVICE_SHADOW_TOPIC_R,1);
-    #endif
-    
+#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+    client.subscribe(DEVICE_SHADOW_TOPIC_R, 1);
+    client.setCallback(shadow_callback);
+#endif
 }
 
 #endif
