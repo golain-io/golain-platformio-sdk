@@ -13,8 +13,7 @@
 #include <Arduino.h>
 #include "pb.h"
 #include "deviceHealth.pb.h"
-#include "encode_callbacks.h"
-#include "decode_callbacks.h"
+
 //#include "persistent_logs.h"
 #define reset_counter_key   "dksdnj"
 #define deviceHealthKey     "nujsnn"

@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <Arduino.h>
 #include "logs.pb.h"
-#include "encode_callbacks.h"
-#include "decode_callbacks.h"
 #include "pb_common.h"
 #include "pb_decode.h"
 #include "pb_encode.h"

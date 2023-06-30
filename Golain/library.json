@@ -1,7 +1,7 @@
 {
     "name": "Golain",
-    "version": "2.5.3",
-    "description": "This is Golain libray",
+    "version": "2.5.6",
+    "description": "This is Golain PlatformIO SDK",
     "keywords": "MQTT,golain",
     "repository":
     {

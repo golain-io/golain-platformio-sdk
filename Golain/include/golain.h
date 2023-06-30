@@ -10,7 +10,18 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
-#include "mqtt_config.h"
+#include <string.h>
+#define mqtt_server "dev.golain.io"
+#define mqtt_port 8083
+#define DEVICE_SHADOW_TOPIC TOPIC_ROOT DEVICE_NAME "/device-shadow"
+#define DEVICE_SHADOW_TOPIC_R TOPIC_ROOT DEVICE_NAME "/device-shadow/r"
+#define DEVICE_SHADOW_TOPIC_U TOPIC_ROOT DEVICE_NAME "/device-shadow/u"
+#define DEVICE_OTA_TOPIC TOPIC_ROOT DEVICE_NAME "/ota"
+#define DEVICE_DATA_TOPIC TOPIC_ROOT DEVICE_NAME "/device-data/"
+
+#define CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE 256
+WiFiClientSecure espClient;
+PubSubClient client(espClient);
 
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
@@ -68,32 +79,17 @@ void mqtt_connect(golain_config *clientt)
 
     while (!client.connected())
     {
-        Serial.println("Connecting to MQTT broker...");
+        Serial.println("Connecting to Golain...");
         if (client.connect(clientt->client_id))
         {
-            Serial.println("Connected to MQTT broker");
+            Serial.println("Connected to Golain");
         }
         else
         {
-            Serial.print("Failed to connect to MQTT broker, rc=");
+            Serial.print("Failed to connect to Golain , rc=");
             Serial.println(client.state());
             delay(5000);
         }
-    }
-}
-
-void postshadow(uint8_t *data, int len)
-{
-
-    bool ret = client.publish(DEVICE_SHADOW_TOPIC_U, data, len);
-
-    if (ret)
-    {
-        Serial.println("Shadow Successfully published ");
-    }
-    else
-    {
-        Serial.println("Some error while publishing shadow");
     }
 }
 
@@ -135,25 +131,26 @@ void golain_post_device_data(void *device_data_struct, const pb_msgdesc_t *messa
 Shadow global_shadow = Shadow_init_zero;
 
 uint8_t receive_buf[Shadow_size];
-
-void golain_shadow_set(uint8_t *buffer, size_t *message_length)
+uint8_t transmit_buf[Shadow_size];
+bool golain_shadow_set()
 
 {
     bool status;
 
-    pb_ostream_t stream = pb_ostream_from_buffer(buffer, Shadow_size);
+    pb_ostream_t stream = pb_ostream_from_buffer(transmit_buf, Shadow_size);
 
     status = pb_encode(&stream, Shadow_fields, &global_shadow);
-    *message_length = stream.bytes_written;
-
+    int temp = stream.bytes_written;
+    // Serial.printf("Encoded length %d\n",temp);
     if (!status)
     {
-        Serial.printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
-        return;
+        // Serial.printf("Encoding failed: %s\n", PB_GET_ERROR(&stream));
+        return false;
     }
     else
     {
-        Serial.printf("Encoding successful\n");
+        // Serial.printf("Encoding successful\n");
+        return client.publish(DEVICE_SHADOW_TOPIC_U, transmit_buf, temp);
     }
 }
 
@@ -175,16 +172,22 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
     //     Serial.println("Decoded Successfully");
     // }
     // user_shadow_callback();
-    if (user_shadow_callback_ptr != NULL)
+    if (user_shadow_callback_ptr != NULL && status)
     {
         user_shadow_callback_ptr();
+    }
+
+    else
+    {
+        Serial.println("Decoding failed");
     }
 }
 
 void shadow_callback(char *topic, byte *payload, unsigned int length)
 {
+    // Serial.printf("Received Length is %d\n and payload is %s\n",length,payload);
     memset(receive_buf, 0, Shadow_size);
- 
+
     for (int i = 0; i < length; i++)
     {
         receive_buf[i] = payload[i];
@@ -224,13 +227,13 @@ void golain_set_client_id(golain_config *client, char *str)
 
     client->client_id = str;
 }
-
+#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
 void golain_set_user_shadow_callback(golain_config *client, void (*callback)())
 {
 
     client->user_shadow_callback = callback;
 }
-
+#endif
 void golain_init(golain_config *clientt)
 {
     if (clientt->ca_cert == NULL || clientt->device_cert == NULL || clientt->device_pvt_key == NULL || clientt->client_id == NULL || clientt->root_topic == NULL)
@@ -244,4 +247,27 @@ void golain_init(golain_config *clientt)
 #endif
 }
 
+bool encode_string(pb_ostream_t *stream, const pb_field_t *field, void *const *arg)
+{
+    char *string_to_encode = (char *)*arg;
+    if (!pb_encode_tag_for_field(stream, field))
+        return false;
+
+    return pb_encode_string(stream, (uint8_t *)string_to_encode, strlen(string_to_encode));
+}
+
+bool decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
+{
+    uint8_t buffer[1024] = {0};
+
+    /* We could read block-by-block to avoid the large buffer... */
+    if (stream->bytes_left > sizeof(buffer) - 1)
+        return false;
+
+    if (!pb_read(stream, buffer, stream->bytes_left))
+        return false;
+
+    sprintf((char *)*arg, "%s", buffer);
+    return true;
+}
 #endif
