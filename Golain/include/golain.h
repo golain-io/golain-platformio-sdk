@@ -11,7 +11,7 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 #include <string.h>
-#include <flags.h>
+
 #define mqtt_server "dev.golain.io"
 #define mqtt_port 8083
 #define DEVICE_SHADOW_TOPIC TOPIC_ROOT DEVICE_NAME "/device-shadow"
@@ -19,10 +19,19 @@
 #define DEVICE_SHADOW_TOPIC_U TOPIC_ROOT DEVICE_NAME "/device-shadow/u"
 #define DEVICE_OTA_TOPIC TOPIC_ROOT DEVICE_NAME "/ota"
 #define DEVICE_DATA_TOPIC TOPIC_ROOT DEVICE_NAME "/device-data/"
+#define DEVICE_FLAG_SET TOPIC_ROOT DEVICE_NAME "/flag-set"
+#define DEVICE_FLAG_RESET TOPIC_ROOT DEVICE_NAME "/flag-reset"
+#define DEVICE_FLAG_TOGGLE TOPIC_ROOT DEVICE_NAME "/flag-toggle"
+#define DEVICE_FLAG_R TOPIC_ROOT DEVICE_NAME "/flag-read"
 
 #define CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE 256
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
+
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+#include <flags.h>
+
+#endif
 
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
@@ -246,6 +255,9 @@ void golain_init(golain_config *clientt)
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
     client.subscribe(DEVICE_SHADOW_TOPIC_R, 1);
 #endif
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+    client.subscribe(DEVICE_FLAG_R, 1);
+#endif
 }
 
 bool encode_string(pb_ostream_t *stream, const pb_field_t *field, void *const *arg)
@@ -271,4 +283,38 @@ bool decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
     sprintf((char *)*arg, "%s", buffer);
     return true;
 }
+
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+
+void golain_set_flag(int num)
+{
+    status_flag_bit |= (1 << num);
+    return client.publish(DEVICE_FLAG_SET, String(num));
+}
+
+void golain_reset_flag(int num)
+{
+    status_flag_bit &= ~(1 << num);
+    return client.publish(DEVICE_FLAG_RESET, String(num));
+}
+
+bool golain_check_flag(int num)
+{
+    return (status_flag_bit << num);
+}
+
+void golain_toggle_flag(int num)
+{
+    if (golain_check_flag(num) == true)
+    {
+        golain_set_flag(num);
+    }
+    else
+    {
+        golain_reset_flag(num);
+    }
+    return client.publish(DEVICE_FLAG_TOGGLE, String(num));
+}
+#endif
+
 #endif
