@@ -11,6 +11,7 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 #include <string.h>
+#include <flags.h>
 #define mqtt_server "dev.golain.io"
 #define mqtt_port 8083
 #define DEVICE_SHADOW_TOPIC TOPIC_ROOT DEVICE_NAME "/device-shadow"
