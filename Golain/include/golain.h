@@ -15,11 +15,9 @@
 #define mqtt_server "dev.golain.io"
 #define mqtt_port 8083
 
-
 #define CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE 256
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
-
 
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
@@ -35,6 +33,10 @@ void shadow_callback(char *topic, byte *payload, unsigned int length);
 void (*user_shadow_callback_ptr)() = NULL;
 #endif
 
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+void (*user_flag_callback)() = NULL;
+#endif
+
 typedef struct _golain_config
 {
 
@@ -48,6 +50,9 @@ typedef struct _golain_config
 #endif
 #ifdef GOLAIN_OTA_ENABLED
     void (*ota_callback)(char *, byte *, unsigned int);
+#endif
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+    void (*user_flag_callback)();
 #endif
 
 } golain_config;
@@ -70,8 +75,12 @@ void mqtt_connect(golain_config *clientt)
     espClient.setCertificate(clientt->device_cert);
     espClient.setPrivateKey(clientt->device_pvt_key);
     client.setServer(mqtt_server, mqtt_port);
-#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
     client.setCallback(shadow_callback);
+
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+user_flag_callback = clientt->user_flag_callback;
+#endif
+#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
     user_shadow_callback_ptr = clientt->user_shadow_callback;
 #endif
 
@@ -98,6 +107,43 @@ void postData(char *data, size_t length, char *topic)
     client.publish(topic_to_publish, data, length);
     Serial.printf("Published to the topic %s\n", topic_to_publish);
 }
+
+void shadow_callback(char *topic, byte *payload, unsigned int length)
+{
+
+    #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+
+    if (strcmp(topic, DEVICE_SHADOW_TOPIC_R) == 0)
+    {
+
+        memset(receive_buf, 0, Shadow_size);
+
+        for (int i = 0; i < length; i++)
+        {
+            receive_buf[i] = payload[i];
+        }
+
+        golain_shadow_get(receive_buf, length);
+    }
+    #endif
+
+#ifdef GOLAIN_DEVICE_FLAG_ENABLED
+    void (*user_flag_callback)() = NULL;
+
+     if (strcmp(topic, DEVICE_FLAG_R) == 0)
+    {
+        if (user_flag_callback == NULL)
+        {
+            return;
+        }
+        else
+        {
+            user_flag_callback();
+        }
+    }
+#endif
+}
+
 
 #ifdef GOLAIN_DATA_POINT_ENABLED
 uint8_t device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
@@ -181,18 +227,7 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
     }
 }
 
-void shadow_callback(char *topic, byte *payload, unsigned int length)
-{
-    // Serial.printf("Received Length is %d\n and payload is %s\n",length,payload);
-    memset(receive_buf, 0, Shadow_size);
 
-    for (int i = 0; i < length; i++)
-    {
-        receive_buf[i] = payload[i];
-    }
-
-    golain_shadow_get(receive_buf, length);
-}
 
 #endif
 
