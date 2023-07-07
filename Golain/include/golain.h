@@ -11,27 +11,15 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 #include <string.h>
-
+#include <topics.h>
 #define mqtt_server "dev.golain.io"
 #define mqtt_port 8083
-#define DEVICE_SHADOW_TOPIC TOPIC_ROOT DEVICE_NAME "/device-shadow"
-#define DEVICE_SHADOW_TOPIC_R TOPIC_ROOT DEVICE_NAME "/device-shadow/r"
-#define DEVICE_SHADOW_TOPIC_U TOPIC_ROOT DEVICE_NAME "/device-shadow/u"
-#define DEVICE_OTA_TOPIC TOPIC_ROOT DEVICE_NAME "/ota"
-#define DEVICE_DATA_TOPIC TOPIC_ROOT DEVICE_NAME "/device-data/"
-#define DEVICE_FLAG_SET TOPIC_ROOT DEVICE_NAME "/flag-set"
-#define DEVICE_FLAG_RESET TOPIC_ROOT DEVICE_NAME "/flag-reset"
-#define DEVICE_FLAG_TOGGLE TOPIC_ROOT DEVICE_NAME "/flag-toggle"
-#define DEVICE_FLAG_R TOPIC_ROOT DEVICE_NAME "/flag-read"
+
 
 #define CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE 256
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
 
-#ifdef GOLAIN_DEVICE_FLAG_ENABLED
-#include <flags.h>
-
-#endif
 
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
