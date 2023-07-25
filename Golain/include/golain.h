@@ -12,11 +12,10 @@
 #include <WiFiClientSecure.h>
 #include <string.h>
 #include <golain_config.h>
-#include<golain_clients.h>
-#include<device_shadow.h>
-#include<data_points.h>
-#include<device_flags.h>
-
+#include <golain_clients.h>
+#include <device_shadow.h>
+#include <data_points.h>
+#include <device_flags.h>
 
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
@@ -25,15 +24,7 @@
 #ifdef GOLAIN_P_LOGS_ENABLED
 #include "persistent_logs.h"
 #endif
-
-
-
-#ifdef GOLAIN_DEVICE_FLAG_ENABLED
-void (*user_flag_callback)() = NULL;
-#endif
-
-
-
+void Internal_callback(char *topic, byte *payload, unsigned int length);
 void test_callback(char *topic, byte *payload, unsigned int length)
 {
     Serial.print("Received message [");
@@ -55,7 +46,7 @@ void mqtt_connect(golain_config *clientt)
     client.setCallback(Internal_callback);
 
 #ifdef GOLAIN_DEVICE_FLAG_ENABLED
-user_flag_callback = clientt->user_flag_callback;
+    user_flag_callback = clientt->user_flag_callback;
 #endif
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
     user_shadow_callback_ptr = clientt->user_shadow_callback;
@@ -77,12 +68,10 @@ user_flag_callback = clientt->user_flag_callback;
     }
 }
 
-
-
 void Internal_callback(char *topic, byte *payload, unsigned int length)
 {
 
-    #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
+#ifdef GOLAIN_DEVICE_SHADOW_ENABLED
 
     if (strcmp(topic, DEVICE_SHADOW_TOPIC_R) == 0)
     {
@@ -96,12 +85,12 @@ void Internal_callback(char *topic, byte *payload, unsigned int length)
 
         golain_shadow_get(receive_buf, length);
     }
-    #endif
+#endif
 
 #ifdef GOLAIN_DEVICE_FLAG_ENABLED
     void (*user_flag_callback)() = NULL;
 
-     if (strcmp(topic, DEVICE_FLAG_R) == 0)
+    if (strcmp(topic, DEVICE_FLAG_R) == 0)
     {
         if (user_flag_callback == NULL)
         {
@@ -114,9 +103,6 @@ void Internal_callback(char *topic, byte *payload, unsigned int length)
     }
 #endif
 }
-
-
-
 
 #endif
 
@@ -195,7 +181,5 @@ bool decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
     sprintf((char *)*arg, "%s", buffer);
     return true;
 }
-
-
 
 #endif

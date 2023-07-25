@@ -8,6 +8,5 @@
 #include <topics.h>
 
 
-#define CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE 256
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
