@@ -4,7 +4,7 @@
 
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
 #include <shadow.pb.h>
-void Internal_callback(char *topic, byte *payload, unsigned int length);
+
 void (*user_shadow_callback_ptr)() = NULL;
 
 Shadow global_shadow = Shadow_init_zero;
