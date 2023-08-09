@@ -5,6 +5,11 @@
         "unordered_map": "cpp",
         "vector": "cpp",
         "__hash_table": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "tuple": "cpp",
+        "variant": "cpp"
     }
 }

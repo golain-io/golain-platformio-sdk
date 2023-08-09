@@ -39,31 +39,35 @@ void test_callback(char *topic, byte *payload, unsigned int length)
 
 void mqtt_connect(golain_config *clientt)
 {
-    espClient.setCACert(clientt->ca_cert);
-    espClient.setCertificate(clientt->device_cert);
-    espClient.setPrivateKey(clientt->device_pvt_key);
-    client.setServer(mqtt_server, mqtt_port);
-    client.setCallback(Internal_callback);
+    if (!client.connected())
+    {
+        Serial.println("Connecting to the broker");
+        espClient.setCACert(clientt->ca_cert);
+        espClient.setCertificate(clientt->device_cert);
+        espClient.setPrivateKey(clientt->device_pvt_key);
+        client.setServer(mqtt_server, mqtt_port);
+        client.setCallback(Internal_callback);
 
 #ifdef GOLAIN_DEVICE_FLAG_ENABLED
-    user_flag_callback = clientt->user_flag_callback;
+        user_flag_callback = clientt->user_flag_callback;
 #endif
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
-    user_shadow_callback_ptr = clientt->user_shadow_callback;
+        user_shadow_callback_ptr = clientt->user_shadow_callback;
 #endif
 
-    while (!client.connected())
-    {
-        Serial.println("Connecting to Golain...");
-        if (client.connect(clientt->client_id))
+        while (!client.connected())
         {
-            Serial.println("Connected to Golain");
-        }
-        else
-        {
-            Serial.print("Failed to connect to Golain , rc=");
-            Serial.println(client.state());
-            delay(5000);
+            Serial.println("Connecting to Golain...");
+            if (client.connect(clientt->client_id))
+            {
+                Serial.println("Connected to Golain");
+            }
+            else
+            {
+                Serial.print("Failed to connect to Golain , rc=");
+                Serial.println(client.state());
+                delay(5000);
+            }
         }
     }
 }
@@ -181,6 +185,12 @@ bool decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
 
     sprintf((char *)*arg, "%s", buffer);
     return true;
+}
+
+void golain_loop()
+{
+    mqtt_connect();
+    client.loop();
 }
 
 #endif
