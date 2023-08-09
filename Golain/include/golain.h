@@ -16,7 +16,7 @@
 #include <device_shadow.h>
 #include <data_points.h>
 #include <device_flags.h>
-
+#include <ext_hashmap.h>
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
 #endif
@@ -149,6 +149,7 @@ void golain_init(golain_config *clientt)
         Serial.println("Please set all the parameters of the client");
         return;
     }
+    global_map = createHashMap();
     mqtt_connect(clientt);
 #ifdef GOLAIN_DEVICE_SHADOW_ENABLED
     client.subscribe(DEVICE_SHADOW_TOPIC_R, 1);
