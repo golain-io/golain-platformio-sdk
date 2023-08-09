@@ -17,6 +17,11 @@
 #include <data_points.h>
 #include <device_flags.h>
 #include <ext_hashmap.h>
+
+unsigned long retryInterval = 1000;  // Initial retry interval in milliseconds
+unsigned long maxRetryInterval = 30000;  // Maximum retry interval in milliseconds
+unsigned long lastConnectionAttempt = 0;
+
 #ifdef GOLAIN_DEVICE_HEALTH_ENABLED
 #include "deviceHealth.h"
 #endif
@@ -189,8 +194,16 @@ bool decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
 
 void golain_loop()
 {
-    mqtt_connect();
-    client.loop();
-}
+    if (!mqttClient.connected())
+    {
+        unsigned long currentMillis = millis();
+        if (currentMillis - lastConnectionAttempt >= retryInterval)
+        {
+            lastConnectionAttempt = currentMillis;
+            mqtt_connect();
+        }
+
+        client.loop();
+    }
 
 #endif
