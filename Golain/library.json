@@ -15,11 +15,10 @@
         "email": "advait.chandorkar@quoppo.com"
       }
     ],
-
-
     "dependencies": {
       "knolleary/PubSubClient": "~2.8",
-      "nanopb/Nanopb": "~0.4.7"
+      "nanopb/Nanopb": "~0.4.7",
+      "ishandaga/hashmap.c": "~1.0.0"
     },
     "frameworks": "*",
     "platforms": "*",

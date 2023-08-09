@@ -1,26 +1,23 @@
 #pragma once
 #include <golain_clients.h>
 #include <golain_config.h>
-#include <iostream>
-#include <unordered_map>
 #include <Arduino.h>
 #include <string>
 
-typedef struct _dp_info{
-    size_t max_size;
-    pb_msgdesc_t message_fields;
+typedef struct _data_point_info{
+  String dp_name;  
+  String fields;
+  size_t size;
+  void (*data);
 
-} data_point_info;
-std::unordered_map<std::string, data_point_info> dpmap;
+}data_point_info;
 
-void golain_register_data_point(String dp_name, const pb_msgdesc_t *message_fields, size_t max_message_size)
-{
-    dp_map[dp_name] = {max_message_size, &message_fields};
-}
+
+
 
 uint8_t device_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_MAX_SIZE];
 
-void golain_post_device_data(void *device_data_struct, std:string dp_name)
+void golain_post_device_data(void *device_data_struct, String dp_name)
 {
     bool status;
     pb_ostream_t stream = pb_ostream_from_buffer(device_data_buffer, dpmap[dp_name].max_size);
