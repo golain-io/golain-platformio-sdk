@@ -1,5 +1,4 @@
-#ifndef _GOLAIN_H
-#define _GOLAIN_H
+#pragma once
 #include <stdlib.h>
 #include <stdio.h>
 #include <Arduino.h>
@@ -113,7 +112,7 @@ void Internal_callback(char *topic, byte *payload, unsigned int length)
 #endif
 }
 
-#endif
+
 
 void golain_set_root_topic(golain_config *client, char *str)
 {
@@ -192,18 +191,18 @@ bool decode_string(pb_istream_t *stream, const pb_field_t *field, void **arg)
     return true;
 }
 
-void golain_loop()
+void golain_loop(golain_config* golain_client)
 {
-    if (!mqttClient.connected())
+    if (!client.connected())
     {
         unsigned long currentMillis = millis();
         if (currentMillis - lastConnectionAttempt >= retryInterval)
         {
             lastConnectionAttempt = currentMillis;
-            mqtt_connect();
+            mqtt_connect(golain_client);
         }
 
         client.loop();
     }
 
-#endif
+}

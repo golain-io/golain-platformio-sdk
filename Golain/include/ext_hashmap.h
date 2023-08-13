@@ -65,6 +65,31 @@ void* get(HashMap* map, const char* key) {
     return NULL; // Key not found
 }
 
+void deleteNode(HashMap* map, const char* key) {
+    unsigned int index = hash(key);
+    KeyValuePair* kvp = map->buckets[index];
+    KeyValuePair* prev = NULL;
+
+    while (kvp != NULL) {
+        if (strcmp(kvp->key, key) == 0) {
+            if (prev == NULL) {
+                // Node to be deleted is the first in the linked list
+                map->buckets[index] = kvp->next;
+            } else {
+                prev->next = kvp->next;
+            }
+
+            free(kvp->key);
+            free(kvp);
+            return; // Node found and deleted
+        }
+
+        prev = kvp;
+        kvp = kvp->next;
+    }
+}
+
+
 void freeHashMap(HashMap* map) {
     for (int i = 0; i < HASHMAP_SIZE; i++) {
         KeyValuePair* kvp = map->buckets[i];

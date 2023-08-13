@@ -61,3 +61,4 @@ void golain_shadow_get(uint8_t *buffer, size_t message_length)
         Serial.println("Decoding failed");
     }
 }
+#endif

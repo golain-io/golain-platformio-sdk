@@ -1,6 +1,6 @@
 {
     "name": "Golain",
-    "version": "2.5.8",
+    "version": "2.5.9",
     "description": "This is Golain PlatformIO SDK",
     "keywords": "MQTT,golain",
     "repository":
@@ -17,8 +17,8 @@
     ],
     "dependencies": {
       "knolleary/PubSubClient": "~2.8",
-      "nanopb/Nanopb": "~0.4.7",
-      "ishandaga/hashmap.c": "~1.0.0"
+      "nanopb/Nanopb": "~0.4.7"
+      
     },
     "frameworks": "*",
     "platforms": "*",
