@@ -202,7 +202,8 @@ void golain_loop(golain_config* golain_client)
             mqtt_connect(golain_client);
         }
 
-        client.loop();
     }
+    client.loop();
+
 
 }
