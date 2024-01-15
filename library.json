@@ -1,6 +1,6 @@
 {
     "name": "golain-platformio-sdk",
-    "version": "0.1",
+    "version": "0.2",
     "description": "PlatformIO SDK for Golain IoT Platform.",
     "keywords": "MQTT,OTA,Golain,IoT,Logs,Bluetooth,ESP,nRF,RPC,Protobuf,gsm,4g,nb-iot",
     "repository":
