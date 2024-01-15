@@ -1,0 +1,29 @@
+{
+    "name": "golain-platformio-sdk",
+    "version": "0.1",
+    "description": "PlatformIO SDK for Golain IoT Platform.",
+    "keywords": "MQTT,OTA,Golain,IoT,Logs,Bluetooth,ESP,nRF,RPC,Protobuf,gsm,4g,nb-iot",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/golain-io/golain-platformio-sdk"
+    },
+
+    "authors":
+    [
+      {
+        "name": "Ishan Daga",
+        "email": "ishan@golain.io"
+      }
+    ],
+
+    "dependencies": {
+      "knolleary/PubSubClient": "~2.8",
+      "nanopb/Nanopb": "~0.4.7",
+      "govorox/SSLClient": "~1.0.0",
+      "vshymanskyy/TinyGSM": "~0.11.7"
+    },
+
+    "frameworks": "*",
+    "platforms": "*"
+  }

@@ -1,69 +1,79 @@
-# golain-platformio-sdk
+# golain-iot-sdk
+C++ SDK for Golain IoT Platform based on the Arduino framework.
+- Minimal setup to get up and running with Golain.
+- Support for WiFi, GSM, 4G, LTE, LoRaWAN, NB-IoT via TinyGSM for communication.
+- Post Device Data, update Device Shadow, recieve OTA Updates, monitor device logs, and more.
 
-## Features - 
-- Provides two isolated communication planes between device and Golain Cloud.
-- Supports MQTT secured and websockets.
-- Enables Remote firmware updates with their digital signatures.
-- Fully open-souce and maintained by Golain.
-- Open to contributions from developers.  
-## Works with  
-
-| Hardware        | PlatformIO Version | Status | Tested |
-| ---             | ---      | ---       | ---                |
-| ESP32-WROOM32-D | `v3.1.1`   | `dev` | :x:                |
-| ESP32-C3        | `v3.1.1` | `dev`     | :heavy_check_mark: |
+## Features
+| Feature | Status |
+| --- | --- |
+| Device Shadow | :heavy_check_mark: |
+| Device Logs | :heavy_check_mark: |
+| Device Data | :heavy_check_mark: |
+| User Association | :heavy_check_mark: |
+| OTA | :heavy_check_mark: |
+| BLE | `alpha` |
+| Embedded RPC | :x: |
 
 
+## Works with / Continous Testing done on -
+| Hardware                | Status    | Tested |
+| ---                     | ---       | --- |
+| ESP32-WROOM32-D         | `stable`  |:heavy_check_mark:  |
+| ESP32-C3                | `stable`  | :heavy_check_mark: |
+| ESP32-S3                | `stable`  | :heavy_check_mark: |
+| ESP32-C6                | `stable`  | :heavy_check_mark: |
+| nRF52840-DK + SIM7600E  | `dev`     | :heavy_check_mark: |
+| nRF52832-DK + SIM800L   | `dev`     | :heavy_check_mark: |
+| nRF9160                 | `dev`     | :heavy_check_mark: |
+
+See Example Projects for more details.
 # Getting Started
 
-## Overview - 
-This SDK consists of following components  
-- [Persistent Logs](https://registry.platformio.org/libraries/shadowfighterca/Golain%20Persistent%20Logs/installation)
-- [MQTT](https://registry.platformio.org/libraries/shadowfighterca/Golain%20MQTT/installation)  
-- [OTA](https://registry.platformio.org/libraries/shadowfighterca/Golain%20OTA/installation)
-- [Device Health](https://registry.platformio.org/libraries/shadowfighterca/Golain%20Device%20Health/installation)
-- BLE Mesh (Coming Soon)
 
 ### Prerequisites - 
-- VS Code -  
-Use following links to Install VS Code on your system.  
-   [VS Code for Linux](https://code.visualstudio.com/docs/setup/linux)  
-   [VS Code for Windows](https://code.visualstudio.com/docs/setup/windows)  
-   [VS Code for MacOS](https://code.visualstudio.com/docs/setup/mac)    
+1. VS Code - 
+    Download and install VS Code from [here](https://code.visualstudio.com/download).
+2. PlatformIO extension for VS Code - Install the PlatformIO extension for VS Code from [here](https://platformio.org/install/ide?install=vscode).
+3. ProtoCompiler - 
+    `protoc` is required for golain sdks to work and should be available in your `PATH`.
+    - Windows - Download and install from [here]()
+    - Linux - 
+        - Debian/Ubuntu -
+        ```bash
+        sudo apt install protobuf-compiler
+        ```
+        - Fedora -
+        ```bash
+        sudo dnf install protobuf-compiler
+        ```
+        - Arch -
+        ```bash
+        sudo pacman -S protobuf
+        ```
+    - MacOS - 
+        - via Homebrew
+        ```bash
+        brew install protobuf
+        ```
+        - via MacPorts
+        ```bash
+        sudo port install protobuf3-cpp
+        ```
 
-- PlatformIO extension -  
-    Go to Extension section of VS code. Enter PlatformIO in the search bar. Click on the install button to install the extension to your VS Code.
-    
-
-### Steps to  get started -
-- Make sure you have an active internet connection.
-- Create a New platformIO project.
-- Select Pllatform and Framework of your choice.
-- Go to `platformio.ini` file of your newly created project.  
-it will look something like this. 
-
-    ```[env:seeed_xiao_esp32c3]  
-    platform = espressif32  
-    board = seeed_xiao_esp32c3
-    framework = arduino 
-
-- Add a section called `lib_deps` to include one of our components to your project. Links for each component are given in the bottom. Refer to this link, to know more about how to add libraries to platformio project.  
-After adding the library, your `platformio.ini` file should look like this.  
-    ```[env:seeed_xiao_esp32c3]
-    platform = espressif32
-    board = seeed_xiao_esp32c3
-    framework = arduino
-    lib_deps =
-        shadowfighterca/Golain Persistent Logs@0.0.1
-
-- Here, the line `shadowfighterca/Golain Persistent Logs@0.0.1` refers to Persistent logs component with version 0.0.1. Make sure to check this link to get our latest version of libraries.  
-- After adding this line, save the project. PlatformIO will fetch the library you mentioned.
-- The location of library will be `/.pio/build/lib_deps/[YOUR_PLATFORM]/[COMPONENT_YOU_MENTIONED]` .
-- Many of our libraries need to be configured before used. User needs to enter their credentials such as Device certificates and keys inside the `config.h` file which is located at the path mentioned above. To know more about the configurations, check out documentation of each of these components.
-- Include the header file mentioned in the documentation, and start using it as per your business logic.  
-
-### PlatformIO lib_deps links -  
-- MQTT - lib_deps= shadowfighterca/Golain MQTT@^0.0.1 
-- OTA - lib_deps= shadowfighterca/Golain OTA@^0.0.1
-- Persistent logs - lib_deps= shadowfighterca/Golain Persistent Logs@^0.0.2
-- Device Health - lib_deps= shadowfighterca/Golain Device Health@^0.0.2
+### Setup -
+1. Create a new PlatformIO project - 
+    - Open VS Code and click on the PlatformIO icon on the left sidebar.
+    - Click on `New Project` and select your board.
+    - Select a project name and click on `Finish`.
+2. Add golain-platformio-sdk as a dependency -
+    - Open `platformio.ini` file in your project.
+    - Add the following line to the end of the file - 
+    ```ini
+    lib_deps = golain-platformio-sdk
+    ```
+    - Save the file.
+3. Get device credentials from [Golain Console](web.golain.io) - 
+    - Login to Golain Console and navigate to `Devices` section.
+    - Click on `Add Device` and follow the instructions.
+    - Download the PlatformIO `certs.h` file and place it in your project's `include` folder.

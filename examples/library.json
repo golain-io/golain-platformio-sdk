@@ -1,8 +1,8 @@
 {
-    "name": "Golain OTA",
+    "name": "Golain MQTT",
     "version": "0.0.1",
-    "description": "This library lets you update your device firmware remotely",
-    "keywords": "MQTT,OTA",
+    "description": "This library lets you connect to golain MQTT backend",
+    "keywords": "MQTT,golain",
     "repository":
     {
       "type": "git",
