@@ -5,27 +5,27 @@ C++ SDK for Golain IoT Platform based on the Arduino framework.
 - Post Device Data, update Device Shadow, recieve OTA Updates, monitor device logs, and more.
 
 ## Features
-| Feature | Status |
-| --- | --- |
-| Device Shadow | :heavy_check_mark: |
-| Device Logs | :heavy_check_mark: |
-| Device Data | :heavy_check_mark: |
+| Feature          | Status             |
+|------------------|--------------------|
+| Device Shadow    | :heavy_check_mark: |
+| Device Logs      | :heavy_check_mark: |
+| Device Data      | :heavy_check_mark: |
 | User Association | :heavy_check_mark: |
-| OTA | :heavy_check_mark: |
-| BLE | `alpha` |
-| Embedded RPC | :x: |
+| OTA              | :heavy_check_mark: |
+| BLE              | `alpha`            |
+| Embedded RPC     | :x:                |
 
 
 ## Works with / Continous Testing done on -
-| Hardware                | Status    | Tested |
-| ---                     | ---       | --- |
-| ESP32-WROOM32-D         | `stable`  |:heavy_check_mark:  |
-| ESP32-C3                | `stable`  | :heavy_check_mark: |
-| ESP32-S3                | `stable`  | :heavy_check_mark: |
-| ESP32-C6                | `stable`  | :heavy_check_mark: |
-| nRF52840-DK + SIM7600E  | `dev`     | :heavy_check_mark: |
-| nRF52832-DK + SIM800L   | `dev`     | :heavy_check_mark: |
-| nRF9160                 | `dev`     | :heavy_check_mark: |
+| Hardware               | Status   | Tested             |
+|------------------------|----------|--------------------|
+| ESP32-WROOM32-D        | `stable` | :heavy_check_mark: |
+| ESP32-C3               | `stable` | :heavy_check_mark: |
+| ESP32-S3               | `stable` | :heavy_check_mark: |
+| ESP32-C6               | `stable` | :heavy_check_mark: |
+| nRF52840-DK + SIM7600E | `dev`    | :heavy_check_mark: |
+| nRF52832-DK + SIM800L  | `dev`    | :heavy_check_mark: |
+| nRF9160                | `dev`    | :heavy_check_mark: |
 
 See Example Projects for more details.
 # Getting Started
