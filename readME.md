@@ -80,7 +80,7 @@ See Example Projects for more details.
       -D ROOT_TOPIC='"/ca5c_3c15/"' // single 
       -D DEVICE_NAME='"Device 002"'
    lib_deps = 
-      ga/golain-platformio-sdk@^0.2
+      idaga/golain-platformio-sdk@^0.2
    custom_nanopb_protos =
       +<src/*.proto>
    custom_nanopb_options = 
@@ -96,17 +96,19 @@ See Example Projects for more details.
     - Login to Golain Console and navigate to `Devices` section.
     - Click on `Add Device` and follow the instructions.
     - Download the PlatformIO `certs.h` file and place it in your project's `include` folder.
-    - Also download the header files and place it src folder
+    - Also download the `project template` and place its contents in the src folder.
+
+    <img src="assets/template.png" alt="template" width="300px">
 
 
 5. Go to the `main.cpp` and replace it with the content which you got in `main.ino` file while downloading headers.
 
 
 6. From the quick access of PIO Home
-   - Go to libraries and install the following dependencies `Nanopb`, `PubSubClient`, `SSLClient`, `TinyGSM` and `golain-platformio-sdk`
+   - Go to libraries and install the following dependencies `golain-platformio-sdk`.
    
 
-7. Make sure your ESP32 board appears on the on your `Serial Port` from the `device` section from PIO Home
+7. Make sure your ESP32 board appears on the on your `Serial Port` from the `device` section from PIO Home.
 
 
 8. Once all dependencies and files are placed and modified, build the program. Your build will be flashed on to the Board.
