@@ -12,7 +12,7 @@
 #include "pb.h"
 #include "nvs_flash.h"
 #include "nvs.h"
-#include ""
+
 #ifndef CONFIG_MAX_PERSISTENT_LOGS
 #define CONFIG_MAX_PERSISTENT_LOGS 50
 #endif
