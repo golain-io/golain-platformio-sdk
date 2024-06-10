@@ -71,11 +71,36 @@ Refer to Example Projects for more details.
 
 ### Setup
 
-4. **Update metadata**
-    - Update the `ROOT_TOPIC` in this format: `'"/xxxx/"'` (replace xxxx with your topic)
-    - Update the `DEVICE_NAME` in this format: `'"xxxx"'`  (replace xxxx with your device name)
+1. Create a new PlatformIO project
+    - Open VS Code and click on the PlatformIO icon on the left sidebar.
+    - Click on `New Project` and select your board.
+    - Select a project name and click on `Finish`.
 
-5. **Get device credentials from [Golain Console](https://web.golain.io)**
+
+2. Add these lines in platformio.ini
+
+   ```ini
+   [env:esp32dev]
+   board = esp32dev
+   framework = arduino
+   monitor_speed = 115200
+   build_flags = -D "MBEDTLS_KEY_EXCHANGE__SOME__PSK_ENABLED"
+      -D ROOT_TOPIC='"/xxxxx/"' // single 
+      -D DEVICE_NAME='"xxxxx"'
+   lib_deps = 
+      ga/golain-platformio-sdk@^0.2
+   custom_nanopb_protos =
+      +<src/*.proto>
+   custom_nanopb_options = 
+      --error-on-unmatched
+
+
+3. Update metadata
+    - Update the `ROOT_TOPIC` in this format: `'"/xxxxx/"'` (replace xxxxx with your topic)
+    - Update the `DEVICE_NAME` in this format: `'"xxxxx"'`  (replace xxxx with your device name)
+
+
+4. **Get device credentials from [Golain Console](https://web.golain.io)**
     - Login to Golain Console and navigate to the `Devices` section.
     - Click on `Add Device` and follow the instructions.
     - Download the PlatformIO `certs.h` file and place it in your project's `include` folder.
@@ -83,19 +108,19 @@ Refer to Example Projects for more details.
 
     ![template](assets/template.png)
 
-6. **Update `main.cpp`**
+5. **Update `main.cpp`**
     - Replace the content of `main.cpp` with the content from the `main.ino` file provided during the header download.
 
-7. **Install dependencies**
+6. **Install dependencies**
     - From the quick access of PIO Home, go to libraries and install the following dependencies: `golain-platformio-sdk`.
 
-8. **Verify your ESP32 board connection**
+7. **Verify your ESP32 board connection**
     - Ensure your ESP32 board appears on the `Serial Port` from the `device` section in PIO Home.
 
-9. **Build and flash the program**
+8. **Build and flash the program**
     - Once all dependencies and files are placed and modified, build the program. Your build will be flashed onto the board.
 
-10. **Verify device status**
+9. **Verify device status**
     - If everything is done correctly, you should be able to see your device online on the [Golain Console](https://web.golain.io).
 
 
