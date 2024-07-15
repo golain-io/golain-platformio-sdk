@@ -23,7 +23,7 @@
 // Include the Golain SDK
 #include <golain.h>
 
-Golain golain(GOLAIN_CERT_CA, GOLAIN_DEVICE_CERT, GOLAIN_PRIVATE_KEY);
+Golain golain(DEVICE_NAME, ROOT_TOPIC, GOLAIN_CERT_CA, GOLAIN_DEVICE_CERT, GOLAIN_PRIVATE_KEY);
 
 GolainDataPoint Icoffee;
 CoffeeMachineTelemetry coffeeData;

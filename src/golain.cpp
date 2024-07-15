@@ -1,5 +1,5 @@
-#include <golain.h>
-#include <golain_logs.h>
+#include "Golain.h"
+#include "golain_logs.h"
 
 #include <stdio.h>
 
@@ -37,10 +37,24 @@ uint8_t golain_data_buffer[CONFIG_GOLAIN_DATA_BUFFER_SIZE];
 #endif
 
 
-Golain::Golain(char* ca_cert, char* device_cert, char* device_private_key) {
+Golain::Golain(char* device_name, char* root_topic, char* ca_cert, char* device_cert, char* device_private_key) {
+    this->device_name = device_name;
+    this->root_topic = root_topic;
     this->ca_cert = ca_cert;
     this->device_cert = device_cert;
     this->device_private_key = device_private_key;
+
+    size_t shadow_topic_length = strlen(root_topic) + strlen(DEVICE_SHADOW_TOPIC_P) + strlen(device_name) + 2;
+    this->device_shadow_r_topic = (char*)malloc(shadow_topic_length);
+    this->device_shadow_u_topic = (char*)malloc(shadow_topic_length);
+    this->device_shadow_p_topic = (char*)malloc(shadow_topic_length);
+    this->device_generic_data_topic = (char*)malloc(strlen(DEVICE_DATA_TOPIC) + strlen(device_name) + strlen(root_topic) + 1);
+
+    sprintf(this->device_shadow_r_topic, DEVICE_SHADOW_TOPIC_R, root_topic, device_name);
+    sprintf(this->device_shadow_u_topic, DEVICE_SHADOW_TOPIC_U, root_topic, device_name);
+    sprintf(this->device_shadow_p_topic, DEVICE_SHADOW_TOPIC_P, root_topic, device_name);
+    sprintf(this->device_generic_data_topic, DEVICE_DATA_TOPIC, root_topic, device_name);
+
     _instance = this;
 }
 
@@ -78,7 +92,7 @@ bool Golain::begin() {
         return false;
     }
     // ask for shadow
-    if (!PubSubClient::publish(DEVICE_SHADOW_TOPIC_P, nullptr, true)) {
+    if (!PubSubClient::publish(this->device_shadow_p_topic, nullptr, true)) {
         GOLAIN_LOGE("Golain", "failed to publish shadow request");
         return false;
     }
@@ -108,7 +122,7 @@ bool Golain::mqtt_connect() {
         if (millis() - mqttLastReconnectAttempt > 200) {
             mqttLastReconnectAttempt = millis();
             PubSubClient::disconnect();
-            if (PubSubClient::connect(DEVICE_NAME)) {
+            if (PubSubClient::connect(this->device_name)) {
                 mqttLastReconnectAttempt = 0;
             }
         }
@@ -127,7 +141,7 @@ void Golain::loop() {
 }
 
 bool Golain::mqtt_subscribe(){
-    bool ret = PubSubClient::subscribe(DEVICE_SHADOW_TOPIC_R, 1);
+    bool ret = PubSubClient::subscribe(this->device_shadow_r_topic, 1);
     if (!ret) {
         #if CONFIG_GOLAIN_INTERNAL_LOG_LEVEL >= LOG_ERROR
             GOLAIN_LOGE("MQTT", "Failed to subscribe to shadow topic");
@@ -169,12 +183,12 @@ Result Golain::postData(GolainDataPoint id, void* data){
         return {GOLAIN_FAIL};
     }
 
-    topic = (char*)malloc(strlen(DEVICE_DATA_TOPIC)+strlen(golain_data_points[id].name)+1);
+    topic = (char*)malloc(strlen(this->device_generic_data_topic)+strlen(golain_data_points[id].name)+1);
     if(!topic){
         GOLAIN_LOGE("Golain", "Failed to allocate memory for topic");
         return {GOLAIN_FAIL};
     }
-    strcpy(topic, DEVICE_DATA_TOPIC);
+    strcpy(topic, this->device_generic_data_topic);
     strcat(topic, golain_data_points[id].name);
 
     if(PubSubClient::publish(topic, golain_data_buffer, stream.bytes_written)){
@@ -195,7 +209,7 @@ golain_err_t Golain::updateShadow()
     memset(transmission_buffer,0,Shadow_size);
     pb_ostream_t stream = pb_ostream_from_buffer(transmission_buffer, Shadow_size);
 
-    status = pb_encode(&stream, Shadow_fields, &GlobalShadow);
+    status = pb_encode(&stream, Shadow_fields, &GlobalShadow); 
     GOLAIN_LOGV("Golain", "Wrote %d bytes to shadow buffer", stream.bytes_written);
     if(!status)
     {
@@ -204,7 +218,7 @@ golain_err_t Golain::updateShadow()
     }
     else
     {
-        if (PubSubClient::publish(DEVICE_SHADOW_TOPIC_U, transmission_buffer, stream.bytes_written)){
+        if (PubSubClient::publish(this->device_shadow_u_topic, transmission_buffer, stream.bytes_written)){
             GOLAIN_LOGV("Golain", "Published shadow update");
             shadow_updated = true;
             return GOLAIN_OK;
@@ -224,7 +238,7 @@ golain_err_t Golain::setDeviceShadowCallback(void (*callback)(Shadow, Shadow)) {
 }
 
 void Golain::internal_mqtt_callback(char* topic, uint8_t* payload, unsigned int len){
-    if (strcmp(topic, DEVICE_SHADOW_TOPIC_R) == 0) {
+    if (strcmp(topic, _instance->device_shadow_r_topic) == 0) {
         _instance->get_shadow(payload, len);
     }
     #ifdef CONFIG_GOLAIN_ENABLE_OTA
@@ -238,7 +252,7 @@ void Golain::get_shadow(uint8_t* buffer, size_t message_length){
     bool status;
     pb_istream_t stream = pb_istream_from_buffer(buffer, message_length);
     GlobalShadowPrevious = GlobalShadow;
-    status = pb_decode(&stream, Shadow_fields, &GlobalShadow);
+    status = pb_decode(&stream, Shadow_fields, &GlobalShadow); 
     if (status)
     {
         if (user_shadow_callback_ptr != NULL)
