@@ -209,7 +209,7 @@ golain_err_t Golain::updateShadow()
     memset(transmission_buffer,0,Shadow_size);
     pb_ostream_t stream = pb_ostream_from_buffer(transmission_buffer, Shadow_size);
 
-    status = pb_encode(&stream, 0, &GlobalShadow); //use Shadow_fields if using previous NanoPB
+    status = pb_encode(&stream, Shadow_fields, &GlobalShadow); 
     GOLAIN_LOGV("Golain", "Wrote %d bytes to shadow buffer", stream.bytes_written);
     if(!status)
     {
@@ -252,7 +252,7 @@ void Golain::get_shadow(uint8_t* buffer, size_t message_length){
     bool status;
     pb_istream_t stream = pb_istream_from_buffer(buffer, message_length);
     GlobalShadowPrevious = GlobalShadow;
-    status = pb_decode(&stream, 0, &GlobalShadow); //use Shadow_fields if using previous NanoPB
+    status = pb_decode(&stream, Shadow_fields, &GlobalShadow); 
     if (status)
     {
         if (user_shadow_callback_ptr != NULL)
